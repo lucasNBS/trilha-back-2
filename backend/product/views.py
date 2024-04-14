@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import UpdateAPIView
+from rest_framework.generics import UpdateAPIView, ListAPIView
 from rest_framework.parsers import FormParser, MultiPartParser
+from django.http import JsonResponse
 from .models import Product
 from .serializers import ProductSerializer
 
@@ -54,3 +55,26 @@ class ProductQuantityStockView(UpdateAPIView):
       request.data.update({'quantity_in_stock': product_quantity_in_stock - float(quantity_in_stock)})
 
     return super().update(request, *args, **kwargs)
+
+class StockOverview(ListAPIView):
+  queryset = Product.objects.all()
+  serializer_class = ProductSerializer
+
+  def get(self, request, *args, **kwargs):
+    return self.retrieve(request, *args, **kwargs)
+
+  def retrieve(self, request, *args, **kwargs):
+    total = 0
+    quantity_in_stock = 0
+    quantity_sold = 0
+
+    for product in self.get_queryset():
+      total += product.price * product.quantity_sold
+      quantity_in_stock += product.quantity_in_stock
+      quantity_sold += product.quantity_sold
+
+    return JsonResponse({
+      'total': total,
+      'quantity_in_stock': quantity_in_stock,
+      'quantity_sold': quantity_sold
+    })
