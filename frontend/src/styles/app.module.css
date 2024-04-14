@@ -9,7 +9,7 @@
 .main-container {
   background-color: var(--background-color);
   min-height: 100vh;
-  padding: 2rem;
+  padding: 2rem 4rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

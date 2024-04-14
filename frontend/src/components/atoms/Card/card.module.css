@@ -1,0 +1,23 @@
+.container {
+  background-color: var(--main-color);
+  max-width: 360px;
+  padding: 1.25rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.title {
+  color: var(--main-text);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.content {
+  color: var(--main-text);
+  font-size: 1.75rem;
+}
