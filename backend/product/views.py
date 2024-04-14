@@ -1,15 +1,21 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import UpdateAPIView, ListAPIView
 from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.pagination import PageNumberPagination
 from django.http import JsonResponse
 from .models import Product
 from .serializers import ProductSerializer
 
 # Create your views here.
+class DefaultPagination(PageNumberPagination):
+  page_size = 5
+  page_query_param = 'page'
+
 class ProductView(ModelViewSet):
   queryset = Product.objects.all()
   serializer_class = ProductSerializer
   parser_classes = (MultiPartParser, FormParser)
+  pagination_class = DefaultPagination
 
 class ProductQuantitySoldView(UpdateAPIView):
   queryset = Product.objects.all()
