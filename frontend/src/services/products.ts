@@ -1,4 +1,4 @@
-import { getOverview, getProducts } from "src/types/products";
+import { Product, getOverview, getProducts } from "src/types/products";
 
 export async function getOverview(): Promise<getOverview> {
   try {
@@ -26,5 +26,15 @@ export async function getProducts(page: number): Promise<getProducts> {
       next: null,
       results: [],
     }
+  }
+}
+
+export async function getProduct(id: number): Promise<Product> {
+  try {
+    const data = await fetch(`http://127.0.0.1:8000/products/${id}/`).then(res => res.json())
+  
+    return data
+  } catch (err) {
+    return {} as Product
   }
 }

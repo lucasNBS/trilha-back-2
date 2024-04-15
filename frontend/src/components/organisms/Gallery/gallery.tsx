@@ -36,6 +36,7 @@ export function Gallery({ previous, next, initialProducts, maxPage }: GalleryPro
           return (
             <GalleryCard
               key={index}
+              id={product.id}
               title={product.title}
               image={product.image}
               price={product.price}
@@ -45,8 +46,14 @@ export function Gallery({ previous, next, initialProducts, maxPage }: GalleryPro
         })}
       </div>
       <div className={style['pagination-container']}>
-        {page > 1 && <Button onClick={() => setPage(pre => pre - 1)} text="Previous" />}
-        {page < maxPage && <Button onClick={() => getNextPage()} text="Next" />}
+        {page > 1 && (
+          <Button
+            isLink={false}
+            onClick={() => setPage(pre => pre - 1)}
+            text="Previous"
+          />
+        )}
+        {page < maxPage && <Button isLink={false} onClick={() => getNextPage()} text="Next" />}
       </div>
     </section>
   )

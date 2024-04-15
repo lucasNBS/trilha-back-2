@@ -1,8 +1,17 @@
 .container {
   cursor: pointer;
+  height: 36px;
   background-color: var(--main-color);
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
   font-size: 1rem;
   color: var(--main-text);
+}
+
+.delete {
+  background-color: var(--delete-color);
+}
+
+.manage {
+  background-color: var(--managment-color);
 }

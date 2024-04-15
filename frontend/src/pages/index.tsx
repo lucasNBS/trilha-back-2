@@ -15,7 +15,7 @@ export default function Home({ stock, sold, productsData }: HomeProps) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Create Next App</title>
+        <title>CRM - Home</title>
       </Head>
       <DashboardOverview stock={stock} sold={sold} />
       <Gallery

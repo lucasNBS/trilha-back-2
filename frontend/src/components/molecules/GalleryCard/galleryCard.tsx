@@ -3,9 +3,10 @@ import { Button } from "src/components/atoms/Button/button";
 import style from "./galleryCard.module.css"
 import { Product } from "src/types/products";
 
-type GalleryCardProps = Omit<Product, "id" | "description">
+type GalleryCardProps = Omit<Product, "description">
 
 export function GalleryCard({
+  id,
   title,
   image,
   price,
@@ -31,11 +32,11 @@ export function GalleryCard({
           <span className={style['info']}><strong>Sold: </strong>{quantity_sold}</span>
         </div>
         <div className={style['actions-container']}>
-          <Button text="Detail" />
-          <Button text="Edit" />
-          <Button text="Delete" />
-          <Button text="Sell" />
-          <Button text="Stock" />
+          <Button isLink={true} text="Detail" href={`/product/${id}/`} />
+          <Button isLink={true} text="Edit" href="/" />
+          <Button isLink={false} text="Delete" type="delete" onClick={() => {}} />
+          <Button isLink={false} text="Sell" type="manage" onClick={() => {}} />
+          <Button isLink={false} text="Stock" type="manage" onClick={() => {}} />
         </div>
       </div>
     </div>

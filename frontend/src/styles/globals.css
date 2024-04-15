@@ -1,6 +1,8 @@
 :root {
   --background-color: #fdfdfd;
   --main-color: #06F;
+  --delete-color: #F20;
+  --managment-color: #0C1;
   --main-text: #efefef;
   --border-color: #e5e5e5;
 }
