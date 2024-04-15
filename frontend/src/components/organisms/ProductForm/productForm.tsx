@@ -5,7 +5,6 @@ import { Button } from "src/components/atoms/Button/button";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useRouter } from "next/router";
 
 export type ProductForm = {
   image?: any;
@@ -52,31 +51,20 @@ function handleChangeImage(image: File) {
   reader.readAsDataURL(image)
 }
 
-export function ProductForm() {
+type ProductFormProps = {
+  submit: () => Promise<void>
+  initialValues?: ProductForm
+}
+
+export function ProductForm({ submit, initialValues }: ProductFormProps) {
   const {
     register,
     formState: { errors },
     handleSubmit
   } = useForm<ProductForm>({
-    resolver: yupResolver(ProductFormSchema)
+    resolver: yupResolver(ProductFormSchema),
+    defaultValues: initialValues
   })
-  const router = useRouter()
-
-  async function submit() {
-    const form = document.querySelector("#product-form") as HTMLFormElement
-    const formData = new FormData(form)
-
-    try {
-      await fetch("http://127.0.0.1:8000/products/", {
-        method: 'POST',
-        body: formData
-      })
-
-      router.push("/")
-    } catch (err) {
-      console.log(err)
-    }
-  }
 
   return (
     <>
@@ -93,7 +81,7 @@ export function ProductForm() {
           <div className={style['image-container']}>
             <Image
               id="preview-image"
-              src="/images/no-image.jpg"
+              src={initialValues?.image ? initialValues?.image : "/images/no-image.jpg"}
               alt="Product image"
               className={style['image']}
               loading="eager"

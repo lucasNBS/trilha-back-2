@@ -45,7 +45,7 @@ export default function Product({ product }: ProductProps) {
         <div className={style['product-info']}>
           <p className={style['product-description']}>{product.description}</p>
           <div className={style['actions-container']}>
-            <Button isLink={true} text="Edit" href="/" />
+            <Button isLink={true} text="Edit" href={`/product/${product.id}/edit`} />
             <Button isLink={false} text="Delete" onClick={() => {}} type="delete" />
           </div>
         </div>

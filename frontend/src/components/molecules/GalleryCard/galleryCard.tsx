@@ -33,7 +33,7 @@ export function GalleryCard({
         </div>
         <div className={style['actions-container']}>
           <Button isLink={true} text="Detail" href={`/product/${id}/`} />
-          <Button isLink={true} text="Edit" href="/" />
+          <Button isLink={true} text="Edit" href={`/product/${id}/edit`} />
           <Button isLink={false} text="Delete" type="delete" onClick={() => {}} />
           <Button isLink={false} text="Sell" type="manage" onClick={() => {}} />
           <Button isLink={false} text="Stock" type="manage" onClick={() => {}} />
