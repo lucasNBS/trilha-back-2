@@ -1,18 +1,17 @@
 import { GalleryCard } from "src/components/molecules/GalleryCard/galleryCard";
 import style from "./gallery.module.css";
 import { Product } from "src/types/products";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Button } from "src/components/atoms/Button/button";
 import { getProducts } from "src/services/products";
 
 type GalleryProps = {
-  previous: string | null
-  next: string | null
   initialProducts: Product[]
   maxPage: number
+  setRemovedProducts: Dispatch<SetStateAction<Product[]>>
 }
 
-export function Gallery({ previous, next, initialProducts, maxPage }: GalleryProps) {
+export function Gallery({ initialProducts, setRemovedProducts, maxPage }: GalleryProps) {
   const [products, setProducts] = useState(initialProducts)
   const [page, setPage] = useState(1)
 
@@ -26,7 +25,9 @@ export function Gallery({ previous, next, initialProducts, maxPage }: GalleryPro
     
     const data = await getProducts(page + 1)
 
-    setProducts(pre => [...pre, ...data.results])
+    if (data.results) {
+      setProducts(pre => [...pre, ...data.results])
+    }
   }
 
   return (
@@ -36,12 +37,9 @@ export function Gallery({ previous, next, initialProducts, maxPage }: GalleryPro
           return (
             <GalleryCard
               key={index}
-              id={product.id}
-              title={product.title}
-              image={product.image}
-              price={product.price}
-              quantity_in_stock={product.quantity_in_stock}
-              quantity_sold={product.quantity_sold}
+              product={product}
+              setProducts={setProducts}
+              setRemovedProducts={setRemovedProducts}
             />)
         })}
       </div>
