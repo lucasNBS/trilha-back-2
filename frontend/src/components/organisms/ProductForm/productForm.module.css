@@ -58,3 +58,8 @@
   border-radius: 4px;
   resize: none;
 }
+
+.error {
+  font-size: 0.875rem;
+  color: var(--delete-color);
+}

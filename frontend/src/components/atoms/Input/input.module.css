@@ -19,6 +19,7 @@
   border-radius: 4px;
 }
 
-.image {
-  opacity: 0;
+.error {
+  font-size: 0.875rem;
+  color: var(--delete-color);
 }
