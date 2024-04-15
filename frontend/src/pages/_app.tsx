@@ -13,6 +13,10 @@ export default function App({ Component, pageProps }: AppProps) {
         html {
           font-family: ${inter.style.fontFamily};
         }
+
+        body {
+          overflow-x: hidden;
+        }
       `}</style>
       <div className={style['container']}>
         <Aside />

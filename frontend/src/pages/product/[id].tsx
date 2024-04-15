@@ -5,18 +5,18 @@ import style from "src/styles/product.module.css";
 import { Button } from "src/components/atoms/Button/button";
 import Image from "next/image";
 
-type ProductPage = {
+type ProductProps = {
   product: Product
 }
 
-export default function Product({ product }: ProductPage) {
+export default function Product({ product }: ProductProps) {
   return (
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>CRM - Product</title>
       </Head>
-      <h2 className={style['title']}>{product.title}</h2>
+      <h1 className={style['title']}>{product.title}</h1>
       <section className={style['container']}>
         <div className={style['product-data']}>
           <div className={style['product-image-container']}>

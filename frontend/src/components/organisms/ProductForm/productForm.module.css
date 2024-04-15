@@ -1,0 +1,60 @@
+.title {
+  font-size: 3rem;
+}
+
+.form-container {
+  width: 100%;
+  display: flex;
+  gap: 2rem;
+}
+
+.form-image {
+  flex: 1;
+}
+
+.image-container {
+  width: 100%;
+  position: relative;
+  aspect-ratio: 3 / 4;
+}
+
+.image {
+  object-fit: contain;
+}
+
+.image-input {
+  cursor: pointer;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1.5rem;
+  flex: 2;
+}
+
+.form-description {
+  height: -webkit-fill-available;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.label {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.textarea {
+  width: 100%;
+  height: -webkit-fill-available;
+  min-height: 400px;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  resize: none;
+}
