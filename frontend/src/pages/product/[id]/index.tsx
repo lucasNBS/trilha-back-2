@@ -4,12 +4,26 @@ import { Product } from "src/types/products";
 import style from "src/styles/product.module.css";
 import { Button } from "src/components/atoms/Button/button";
 import Image from "next/image";
+import { useContext } from "react";
+import { ManagmentContext } from "src/contexts/managmentContext";
+import { useRouter } from "next/router";
 
 type ProductProps = {
   product: Product
 }
 
 export default function Product({ product }: ProductProps) {
+  const router = useRouter()
+
+  async function handleDeleteProduct() {
+    try {
+      await fetch(`http://127.0.0.1:8000/products/${product.id}/`, { method: "DELETE" })
+      router.push("/")
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <>
       <Head>
@@ -46,7 +60,7 @@ export default function Product({ product }: ProductProps) {
           <p className={style['product-description']}>{product.description}</p>
           <div className={style['actions-container']}>
             <Button isLink={true} text="Edit" href={`/product/${product.id}/edit`} />
-            <Button isLink={false} text="Delete" onClick={() => {}} type="delete" />
+            <Button isLink={false} text="Delete" onClick={handleDeleteProduct} type="delete" />
           </div>
         </div>
       </section>

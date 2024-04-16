@@ -1,26 +1,25 @@
 import { Card } from "src/components/atoms/Card/card";
 import style from "./dashboardOverview.module.css";
-import { Product } from "src/types/products";
+import { useContext, useEffect } from "react";
+import { ManagmentContext } from "src/contexts/managmentContext";
 
 type DashboardOverviewProps = {
-  stock: number
-  sold: number
-  removedProducts: Product[]
+  initialStock: number
+  initialSold: number
 }
 
-export function DashboardOverview({ stock, sold, removedProducts }: DashboardOverviewProps) {
-  const totalStock = stock - removedProducts.reduce((previous, current) => {
-    return previous += current.quantity_in_stock
-  }, 0)
+export function DashboardOverview({ initialStock, initialSold }: DashboardOverviewProps) {
+  const { stock, setStock, sold, setSold } = useContext(ManagmentContext)
 
-  const totalSold = sold - removedProducts.reduce((previous, current) => {
-    return previous += current.quantity_sold
-  }, 0)
-  
+  useEffect(() => {
+    setStock(initialStock)
+    setSold(initialSold)
+  }, [])
+
   return (
     <section className={style['container']}>
-      <Card title="Total Stock" content={totalStock} />
-      <Card title="Total Sold" content={totalSold} />
+      <Card title="Total Stock" content={stock} />
+      <Card title="Total Sold" content={sold} />
     </section>
   )
 }

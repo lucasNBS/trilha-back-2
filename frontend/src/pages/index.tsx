@@ -12,20 +12,14 @@ type HomeProps = {
 }
 
 export default function Home({ stock, sold, productsData }: HomeProps) {
-  const [removedProducts, setRemovedProducts] = useState([] as Product[])
-
   return (
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>CRM - Home</title>
       </Head>
-      <DashboardOverview stock={stock} sold={sold} removedProducts={removedProducts} />
-      <Gallery
-        initialProducts={productsData.results}
-        maxPage={Math.ceil(productsData.count / 5)}
-        setRemovedProducts={setRemovedProducts}
-      />
+      <DashboardOverview initialStock={stock} initialSold={sold} />
+      <Gallery initialProducts={productsData.results} maxPage={Math.ceil(productsData.count / 5)} />
     </>
   );
 }

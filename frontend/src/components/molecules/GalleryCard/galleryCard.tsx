@@ -2,34 +2,29 @@ import Image from "next/image";
 import { Button } from "src/components/atoms/Button/button";
 import style from "./galleryCard.module.css"
 import { Product } from "src/types/products";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
+import { ManagmentContext } from "src/contexts/managmentContext";
 
 type GalleryCardProps = {
   product: Product
   setProducts: Dispatch<SetStateAction<Product[]>>
-  setRemovedProducts: Dispatch<SetStateAction<Product[]>>
 }
 
-async function handleDeleteProduct(
-  product: Product,
-  setProducts: Dispatch<SetStateAction<Product[]>>,
-  setRemovedProducts: Dispatch<SetStateAction<Product[]>>
-) {
-  try {
-    await fetch(`http://127.0.0.1:8000/products/${product.id}/`, { method: "DELETE" })
-
-    setProducts(pre => pre.filter(item => item.id !== product.id))
-    setRemovedProducts(pre => [...pre, product])
-  } catch (err) {
-    console.log(err)
+export function GalleryCard({ product, setProducts }: GalleryCardProps) {
+  const { setSold, setStock } = useContext(ManagmentContext)
+  
+  async function handleDeleteProduct() {
+    try {
+      await fetch(`http://127.0.0.1:8000/products/${product.id}/`, { method: "DELETE" })
+  
+      setProducts(pre => pre.filter(item => item.id !== product.id))
+      setSold(pre => pre - product.quantity_sold)
+      setStock(pre => pre - product.quantity_in_stock)
+    } catch (err) {
+      console.log(err)
+    }
   }
-}
-
-export function GalleryCard({
-  product,
-  setProducts,
-  setRemovedProducts,
-}: GalleryCardProps) {
+  
   return (
     <div className={style['container']}>
       <div className={style['image-container']}>
@@ -55,7 +50,7 @@ export function GalleryCard({
             isLink={false}
             text="Delete"
             type="delete"
-            onClick={() => handleDeleteProduct(product, setProducts, setRemovedProducts)}
+            onClick={handleDeleteProduct}
           />
           <Button isLink={false} text="Sell" type="manage" onClick={() => {}} />
           <Button isLink={false} text="Stock" type="manage" onClick={() => {}} />

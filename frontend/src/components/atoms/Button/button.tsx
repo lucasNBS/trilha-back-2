@@ -13,7 +13,7 @@ type ButtonLinkProps = {
 
 type ButtonButtonProps = {
   isLink: false
-  onClick: () => void
+  onClick: Function
 } & ButtonBaseProps
 
 type ButtonProps = ButtonButtonProps | ButtonLinkProps
@@ -33,7 +33,7 @@ export function Button(props: ButtonProps) {
   
   return (
     <button
-      onClick={props.onClick ? props.onClick : undefined}
+      onClick={props.onClick ? () => props.onClick() : undefined}
       className={`${style['container']} ${props.type && style[props.type]}`}
     >
       {props.text}

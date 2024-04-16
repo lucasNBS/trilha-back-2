@@ -1,17 +1,16 @@
 import { GalleryCard } from "src/components/molecules/GalleryCard/galleryCard";
 import style from "./gallery.module.css";
 import { Product } from "src/types/products";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { Button } from "src/components/atoms/Button/button";
 import { getProducts } from "src/services/products";
 
 type GalleryProps = {
   initialProducts: Product[]
   maxPage: number
-  setRemovedProducts: Dispatch<SetStateAction<Product[]>>
 }
 
-export function Gallery({ initialProducts, setRemovedProducts, maxPage }: GalleryProps) {
+export function Gallery({ initialProducts, maxPage }: GalleryProps) {
   const [products, setProducts] = useState(initialProducts)
   const [page, setPage] = useState(1)
 
@@ -39,7 +38,6 @@ export function Gallery({ initialProducts, setRemovedProducts, maxPage }: Galler
               key={index}
               product={product}
               setProducts={setProducts}
-              setRemovedProducts={setRemovedProducts}
             />)
         })}
       </div>
