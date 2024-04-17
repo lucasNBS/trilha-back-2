@@ -1,0 +1,16 @@
+.background {
+  background-color: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.modal-container {
+  background-color: var(--background-color);
+  padding: 2rem;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+}

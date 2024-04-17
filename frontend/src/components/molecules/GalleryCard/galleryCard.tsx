@@ -4,13 +4,21 @@ import style from "./galleryCard.module.css"
 import { Product } from "src/types/products";
 import { Dispatch, SetStateAction, useContext } from "react";
 import { ManagmentContext } from "src/contexts/managmentContext";
+import { ModalOptionsType } from "src/pages";
 
 type GalleryCardProps = {
   product: Product
   setProducts: Dispatch<SetStateAction<Product[]>>
+  setModalOptions: Dispatch<SetStateAction<ModalOptionsType>>
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>
 }
 
-export function GalleryCard({ product, setProducts }: GalleryCardProps) {
+export function GalleryCard({
+  product,
+  setProducts,
+  setModalOptions,
+  setIsModalOpen
+}: GalleryCardProps) {
   const { setSold, setStock } = useContext(ManagmentContext)
   
   async function handleDeleteProduct() {
@@ -52,8 +60,24 @@ export function GalleryCard({ product, setProducts }: GalleryCardProps) {
             type="delete"
             onClick={handleDeleteProduct}
           />
-          <Button isLink={false} text="Sell" type="manage" onClick={() => {}} />
-          <Button isLink={false} text="Stock" type="manage" onClick={() => {}} />
+          <Button
+            isLink={false}
+            text="Sell"
+            type="manage"
+            onClick={() => {
+              setModalOptions({ product: product, type: "Sell" })
+              setIsModalOpen(true)
+            }}
+          />
+          <Button
+            isLink={false}
+            text="Stock"
+            type="manage"
+            onClick={() => {
+              setModalOptions({ product: product, type: "Stock" })
+              setIsModalOpen(true)
+            }}
+          />
         </div>
       </div>
     </div>

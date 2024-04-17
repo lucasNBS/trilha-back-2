@@ -1,16 +1,24 @@
 import { GalleryCard } from "src/components/molecules/GalleryCard/galleryCard";
 import style from "./gallery.module.css";
 import { Product } from "src/types/products";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Button } from "src/components/atoms/Button/button";
 import { getProducts } from "src/services/products";
+import { ModalOptionsType } from "src/pages";
 
 type GalleryProps = {
   initialProducts: Product[]
   maxPage: number
+  setModalOptions: Dispatch<SetStateAction<ModalOptionsType>>
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>
 }
 
-export function Gallery({ initialProducts, maxPage }: GalleryProps) {
+export function Gallery({
+  initialProducts,
+  maxPage,
+  setModalOptions,
+  setIsModalOpen
+}: GalleryProps) {
   const [products, setProducts] = useState(initialProducts)
   const [page, setPage] = useState(1)
 
@@ -38,6 +46,8 @@ export function Gallery({ initialProducts, maxPage }: GalleryProps) {
               key={index}
               product={product}
               setProducts={setProducts}
+              setModalOptions={setModalOptions}
+              setIsModalOpen={setIsModalOpen}
             />)
         })}
       </div>
