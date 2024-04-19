@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "src/components/atoms/Button/button";
 import { Input } from "src/components/atoms/Input/input";
@@ -7,9 +7,12 @@ import { Modal } from "src/components/atoms/Modal/modal";
 import { ModalOptionsType } from "src/pages";
 import * as Yup from "yup";
 import style from "./managmentModal.module.css";
+import { ManagmentContext } from "src/contexts/managmentContext";
 
 export type ManagmentForm = {
-  [k: string]: number
+  quantity_sold?: number
+  quantity_in_stock?: number
+  operation: string
 }
 
 type ManagmentModalProps = {
@@ -17,28 +20,99 @@ type ManagmentModalProps = {
   options: ModalOptionsType
 }
 
+const ManagmentFormSchema = Yup.object().shape({
+  quantity_sold: Yup.number()
+    .typeError("This field must be a number")
+    .min(0, "This field cannot be negative"),
+  quantity_in_stock: Yup.number()
+    .typeError("This field must be a number")
+    .min(0, "This field cannot be negative"),
+  operation: Yup.string()
+    .required()
+    .test("is valid", "Invalid value", (val) => val === "remove" || val === "add")
+})
+
 export function ManagmentModal({ setIsOpen, options }: ManagmentModalProps) {
   const name = options.type === "Sell" ? 'quantity_sold' : 'quantity_in_stock'
+  const apiType = options.type === "Sell" ? 'quantity-sold' : 'quantity-stock'
 
-  const ManagmentFormSchema = Yup.object().shape({
-    [name]: Yup.number()
-      .typeError("This field must be a number")
-      .required("This field is required")
-      .min(0, "This field cannot be negative")
-  })
-
-  const { register, formState: { errors }, handleSubmit } = useForm<ManagmentForm>({
+  const { setSold, setStock, setEditedProductId } = useContext(ManagmentContext)
+  const {
+      register,
+      formState: { errors },
+      setValue,
+      setError,
+      handleSubmit
+    } = useForm<ManagmentForm>({
     resolver: yupResolver(ManagmentFormSchema)
   })
 
+  async function submit(data: ManagmentForm) {
+    const value = data[name]
+
+    const request = await fetch(
+      `http://127.0.0.1:8000/product/${options.product.id}/${apiType}/`,
+      {
+        method: "PATCH",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      }
+    )
+    .then(res => res.json())
+
+    if (request.detail) {
+      setError(name, { message: request.detail })
+    } else {
+      setIsOpen(false)
+      setEditedProductId(options.product.id)
+
+      if (name === 'quantity_in_stock' && typeof value === 'number') {
+        if (data.operation === 'add') {
+          setStock(pre => pre + value)
+        }
+        if (data.operation === 'remove') {
+          setStock(pre => pre - value)
+        }
+      }
+
+      if (name === 'quantity_sold' && typeof value === 'number') {
+        if (data.operation === 'add') {
+          setSold(pre => pre + value)
+          setStock(pre => pre - value)
+        }
+        if (data.operation === 'remove') {
+          setSold(pre => pre - value)
+          setStock(pre => pre + value)
+        }
+      }
+    }
+  }
+
   return (
     <Modal setIsOpen={setIsOpen}>
-      <form className={style['container']}>
+      <form className={style['container']} method="post" onSubmit={handleSubmit(submit)}>
         <h2 className={style['title']}>Manage {options.type}</h2>
         <Input register={register} name={name} type="number" error={errors[name]?.message} />
         <div className={style['actions-container']}>
-          <Button isLink={false} text="Remove" type="delete" onClick={() => {}} />
-          <Button isLink={false} text="Add" type="manage" onClick={() => {}} />
+          <Button
+            isLink={false}
+            text="Remove"
+            type="delete"
+            onClick={() => {
+              setValue("operation", "remove")
+            }}
+          />
+          <Button
+            isLink={false}
+            text="Add"
+            type="manage"
+            onClick={() => {
+              setValue("operation", "add")
+            }}
+          />
         </div>
       </form>
     </Modal>

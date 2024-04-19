@@ -3,6 +3,7 @@ from rest_framework.generics import UpdateAPIView, ListAPIView
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.pagination import PageNumberPagination
 from django.http import JsonResponse
+from .exceptions import OperationUnavailable
 from .models import Product
 from .serializers import ProductSerializer
 
@@ -39,8 +40,13 @@ class ProductQuantitySoldView(UpdateAPIView):
       request.data.update({'quantity_sold': product_quantity_sold - float(quantity_sold)})
       request.data.update({'quantity_in_stock': product_quantity_in_stock + float(quantity_sold)})
 
+    if float(request.data.get("quantity_sold")) < 0:
+      raise OperationUnavailable(detail="Quantity sold cannot be negative")
+    if float(request.data.get("quantity_in_stock")) < 0:
+      raise OperationUnavailable(detail="Quantity in stock cannot be negative")
+    
     return super().update(request, *args, **kwargs)
-  
+
 class ProductQuantityStockView(UpdateAPIView):
   queryset = Product.objects.all()
   serializer_class = ProductSerializer
@@ -59,6 +65,9 @@ class ProductQuantityStockView(UpdateAPIView):
       request.data.update({'quantity_in_stock': product_quantity_in_stock + float(quantity_in_stock)})
     if operation == 'remove':
       request.data.update({'quantity_in_stock': product_quantity_in_stock - float(quantity_in_stock)})
+
+    if float(request.data.get("quantity_in_stock")) < 0:
+      raise OperationUnavailable(detail="Quantity in stock cannot be negative")
 
     return super().update(request, *args, **kwargs)
 
