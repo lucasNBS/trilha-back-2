@@ -35,24 +35,19 @@ class LoginView(APIView):
       'iat': datetime.datetime.now()
     }
 
+    serializer = UserSerializer(user)
+
     access_token = jwt.encode(payload, 'SECRET', algorithm='HS256')
     refresh_token = jwt.encode({'id': user.id}, 'SECRET', algorithm='HS256')
 
-    response = Response({'message': 'Success'})
-
-    response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:3000'
-    response['Access-Control-Allow-Credentials'] = True
-    response['Access-Control-Allow-Methods'] = ['GET', 'POST']
-
-    response.set_cookie(key='access_token', value=access_token, max_age=30, httponly=True)
-    response.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
-
-    return response
+    return Response({'access_token': access_token, 'refresh_token': refresh_token, 'user': serializer.data})
   
 class UserView(APIView):
 
   def get(self, request):
     refresh_token = request.COOKIES.get('refresh_token')
+
+    print(request.COOKIES)
 
     if not refresh_token:
       raise AuthenticationFailed('Unauthenticated')
@@ -72,25 +67,9 @@ class UserView(APIView):
 
       serializer = UserSerializer(user)
 
-      response = Response(serializer.data)
-      response.set_cookie(key='access_token', value=access_token, max_age=30, httponly=True)
-      response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:3000'
-      response['Access-Control-Allow-Credentials'] = True
-      response['Access-Control-Allow-Methods'] = ['GET', 'POST']
-
-      return response
+      return Response({'access_token': access_token, 'user': serializer.data})
     except:
       raise AuthenticationFailed('Unauthenticated')
-
-class LogoutView(APIView):
-
-  def post(self, request):
-    response = Response({'message': 'Success'})
-
-    response.delete_cookie('access_token')
-    response.delete_cookie('refresh_token')
-    return response
-  
 
 class RestrictAccessView(APIView):
   

@@ -6,6 +6,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
+import { setCookie } from "nookies";
+import { useContext } from "react";
+import { AuthenticationContext } from "src/contexts/authenticationContext";
 
 type LoginFormType = {
   email: string
@@ -34,13 +37,13 @@ export default function Login() {
     resolver: yupResolver(LoginFormSchema)
   })
   const router = useRouter()
+  const { setUser } = useContext(AuthenticationContext)
 
   async function submit(data: LoginFormType) {
 
     const request = await fetch('http://127.0.0.1:8000/login/',
       {
         method: 'POST',
-        credentials: 'include',
         headers: {
           "Accept": "application/json",
           "Content-Type": "application/json",
@@ -50,11 +53,16 @@ export default function Login() {
     )
     .then(res => res.json())
 
-    console.log(request)
-
     if (request.detail) {
       setError("password", { message: request.detail })
     } else {
+      const accessToken = request['access_token']
+      const refreshToken = request['refresh_token']
+
+      setCookie(null, "access_token", accessToken, { maxAge: 60 * 60 * 1000 })
+      setCookie(null, "refresh_token", refreshToken, { maxAge: 60 * 60 * 1000 })
+      setUser(request['user'])
+
       router.push("/")
     }
   }

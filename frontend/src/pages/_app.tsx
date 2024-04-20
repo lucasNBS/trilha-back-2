@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { Aside } from "src/components/organisms/Aside/aside";
 import style from "src/styles/app.module.css";
 import { ManagmentContextProvider } from "src/contexts/managmentContext";
+import { AuthenticationContextProvider } from "src/contexts/authenticationContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,9 +23,11 @@ export default function App({ Component, pageProps, router }: AppProps) {
             overflow-x: hidden;
           }
         `}</style>
-        <ManagmentContextProvider>
-          <Component {...pageProps} />
-        </ManagmentContextProvider>
+        <AuthenticationContextProvider>
+          <ManagmentContextProvider>
+            <Component {...pageProps} />
+          </ManagmentContextProvider>
+        </AuthenticationContextProvider>
       </>
     )
   }
@@ -40,14 +43,16 @@ export default function App({ Component, pageProps, router }: AppProps) {
           overflow-x: hidden;
         }
       `}</style>
-      <ManagmentContextProvider>
-        <div className={style['container']}>
-          <Aside />
-          <main className={style['main-container']}>
-            <Component {...pageProps} />
-          </main>
-        </div>
-      </ManagmentContextProvider>
+      <AuthenticationContextProvider>
+        <ManagmentContextProvider>
+          <div className={style['container']}>
+            <Aside />
+            <main className={style['main-container']}>
+              <Component {...pageProps} />
+            </main>
+          </div>
+        </ManagmentContextProvider>
+      </AuthenticationContextProvider>
     </>
   );
 }
