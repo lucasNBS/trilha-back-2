@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User
+from .exceptions import UserAlreadyExists
 
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
@@ -9,6 +10,14 @@ class UserSerializer(serializers.ModelSerializer):
       'role': {'read_only': True},
       'password': {'write_only': True}
     }
+
+  def is_valid(self, *, raise_exception=False):
+    email = self.initial_data['email']
+
+    if self.Meta.model.objects.filter(email__iexact=email).count() > 0:
+      raise UserAlreadyExists(detail="User with this email already exists")
+
+    return super().is_valid(raise_exception=raise_exception)
 
   def create(self, validated_data):
     password = validated_data.pop('password', None)

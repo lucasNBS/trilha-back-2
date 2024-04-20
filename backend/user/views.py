@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -39,10 +38,14 @@ class LoginView(APIView):
     access_token = jwt.encode(payload, 'SECRET', algorithm='HS256')
     refresh_token = jwt.encode({'id': user.id}, 'SECRET', algorithm='HS256')
 
-    response = Response()
+    response = Response({'message': 'Success'})
 
-    response.set_cookie(key='access_token', value=access_token, max_age=30)
-    response.set_cookie(key='refresh_token', value=refresh_token)
+    response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:3000'
+    response['Access-Control-Allow-Credentials'] = True
+    response['Access-Control-Allow-Methods'] = ['GET', 'POST']
+
+    response.set_cookie(key='access_token', value=access_token, max_age=30, httponly=True)
+    response.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
 
     return response
   
@@ -70,7 +73,10 @@ class UserView(APIView):
       serializer = UserSerializer(user)
 
       response = Response(serializer.data)
-      response.set_cookie(key='access_token', value=access_token, max_age=30)
+      response.set_cookie(key='access_token', value=access_token, max_age=30, httponly=True)
+      response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:3000'
+      response['Access-Control-Allow-Credentials'] = True
+      response['Access-Control-Allow-Methods'] = ['GET', 'POST']
 
       return response
     except:

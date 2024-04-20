@@ -7,7 +7,28 @@ import { ManagmentContextProvider } from "src/contexts/managmentContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function App({ Component, pageProps }: AppProps) {
+const pagesWithoutLayoutRoute = ["/register", "/login"]
+
+export default function App({ Component, pageProps, router }: AppProps) {
+  if (pagesWithoutLayoutRoute.includes(router.pathname)) {
+    return (
+      <>
+        <style jsx global>{`
+          html {
+            font-family: ${inter.style.fontFamily};
+          }
+
+          body {
+            overflow-x: hidden;
+          }
+        `}</style>
+        <ManagmentContextProvider>
+          <Component {...pageProps} />
+        </ManagmentContextProvider>
+      </>
+    )
+  }
+  
   return (
     <>
       <style jsx global>{`

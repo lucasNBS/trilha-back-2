@@ -43,7 +43,7 @@ export function Gallery({
         {products.slice(firstIndex, lastIndex).map((product, index) => {
           return (
             <GalleryCard
-              key={index}
+              key={product.id}
               product={product}
               setProducts={setProducts}
               setModalOptions={setModalOptions}
@@ -59,7 +59,7 @@ export function Gallery({
             text="Previous"
           />
         )}
-        {page < maxPage && <Button isLink={false} onClick={() => getNextPage()} text="Next" />}
+        {page < maxPage && <Button isLink={false} onClick={getNextPage} text="Next" />}
       </div>
     </section>
   )
