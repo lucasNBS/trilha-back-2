@@ -1,7 +1,9 @@
+import { NextPageContext } from "next"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import { ProductForm } from "src/components/organisms/ProductForm/productForm"
-import { getProduct } from "src/services/products"
+import { baseAxios } from "src/lib/axios"
+import { getProduct } from "src/services/client/products"
 import { Product } from "src/types/products"
 
 type ProductEditProps = {
@@ -16,10 +18,13 @@ export default function ProductEdit({ product }: ProductEditProps) {
     const formData = new FormData(form)
 
     try {
-      await fetch(`http://127.0.0.1:8000/products/${product.id}/`, {
-        method: 'PATCH',
-        body: formData
-      })
+      await baseAxios.patch(`/products/${product.id}/`, formData,
+        {
+          headers: {
+            'content-type': 'multipart/form-data'
+          }
+        }
+      )
 
       router.push("/")
     } catch (err) {
@@ -38,8 +43,8 @@ export default function ProductEdit({ product }: ProductEditProps) {
   )
 }
 
-export async function getServerSideProps(request: any) {
-  const id = request.query.id
+export async function getServerSideProps(ctx: NextPageContext) {
+  const id = Number(ctx.query.id)
 
   const product = await getProduct(id)
 

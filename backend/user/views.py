@@ -1,9 +1,9 @@
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.exceptions import AuthenticationFailed, NotAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import User
 from .serializers import UserSerializer
-import jwt, datetime
+import jwt, datetime, json
 
 # Create your views here.
 class RegisterView(APIView):
@@ -31,7 +31,7 @@ class LoginView(APIView):
 
     payload = {
       'id': user.id,
-      'exp': datetime.datetime.now() + datetime.timedelta(minutes=15),
+      'exp': datetime.datetime.now() + datetime.timedelta(seconds=20),
       'iat': datetime.datetime.now()
     }
 
@@ -40,18 +40,19 @@ class LoginView(APIView):
     access_token = jwt.encode(payload, 'SECRET', algorithm='HS256')
     refresh_token = jwt.encode({'id': user.id}, 'SECRET', algorithm='HS256')
 
-    return Response({'access_token': access_token, 'refresh_token': refresh_token, 'user': serializer.data})
+    return Response(
+      {'access_token': access_token, 'refresh_token': refresh_token, 'user': serializer.data}
+    )
   
-class UserView(APIView):
+class TokenView(APIView):
 
-  def get(self, request):
-    refresh_token = request.COOKIES.get('refresh_token')
-
-    print(request.COOKIES)
+  def post(self, request):
+    body_unicode = request.body.decode('utf-8')
+    refresh_token = json.loads(body_unicode)
 
     if not refresh_token:
-      raise AuthenticationFailed('Unauthenticated')
-    
+      raise NotAuthenticated('Unauthenticated')
+
     try:
       payload = jwt.decode(refresh_token, 'SECRET', algorithms=['HS256'])
 
@@ -59,7 +60,7 @@ class UserView(APIView):
 
       payload = {
         'id': user.id,
-        'exp': datetime.datetime.now() + datetime.timedelta(minutes=15),
+        'exp': datetime.datetime.now() + datetime.timedelta(seconds=20),
         'iat': datetime.datetime.now()
       }
 

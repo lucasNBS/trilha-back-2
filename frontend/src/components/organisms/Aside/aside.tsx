@@ -1,17 +1,17 @@
 import { Navbar } from "src/components/molecules/Navbar/navbar";
 import style from "./aside.module.css";
-import { Button } from "src/components/atoms/Button/button";
 import { useContext } from "react";
 import { AuthenticationContext } from "src/contexts/authenticationContext";
 import { destroyCookie } from "nookies";
 
-function handleLogout() {
-  destroyCookie(null, "accessToken")
-  destroyCookie(null, "refreshToken")
-}
-
 export function Aside() {
-  const { user } = useContext(AuthenticationContext)
+  const { user, setUser } = useContext(AuthenticationContext)
+
+  function handleLogout() {
+    destroyCookie(null, "access_token")
+    destroyCookie(null, "refresh_token")
+    setUser(null)
+  }
   
   return (
     <aside className={style['container']}>

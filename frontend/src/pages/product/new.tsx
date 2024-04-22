@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { ProductForm } from "src/components/organisms/ProductForm/productForm";
+import { baseAxios } from "src/lib/axios";
 
 export default function NewProduct() {
   const router = useRouter()
@@ -10,10 +11,13 @@ export default function NewProduct() {
     const formData = new FormData(form)
 
     try {
-      await fetch("http://127.0.0.1:8000/products/", {
-        method: 'POST',
-        body: formData
-      })
+      await baseAxios.post("/products/", formData,
+        {
+          headers: {
+            'content-type': 'multipart/form-data'
+          }
+        }
+      )
 
       router.push("/")
     } catch (err) {

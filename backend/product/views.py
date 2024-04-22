@@ -6,17 +6,38 @@ from django.http import JsonResponse
 from .exceptions import OperationUnavailable
 from .models import Product
 from .serializers import ProductSerializer
+from user.mixins import LoginRequiredMixin
 
 # Create your views here.
 class DefaultPagination(PageNumberPagination):
   page_size = 5
   page_query_param = 'page'
 
-class ProductView(ModelViewSet):
+class ProductView(ModelViewSet, LoginRequiredMixin):
   queryset = Product.objects.all()
   serializer_class = ProductSerializer
   parser_classes = (MultiPartParser, FormParser)
   pagination_class = DefaultPagination
+
+  def create(self, request, *args, **kwargs):
+    self.is_logged(request)
+    return super().create(request, *args, **kwargs)
+  
+  def update(self, request, *args, **kwargs):
+    self.is_logged(request)
+    return super().update(request, *args, **kwargs)
+  
+  def list(self, request, *args, **kwargs):
+    self.is_logged(request)
+    return super().list(request, *args, **kwargs)
+  
+  def retrieve(self, request, *args, **kwargs):
+    self.is_logged(request)
+    return super().retrieve(request, *args, **kwargs)
+  
+  def destroy(self, request, *args, **kwargs):
+    self.is_logged(request)
+    return super().destroy(request, *args, **kwargs)
 
 class ProductQuantitySoldView(UpdateAPIView):
   queryset = Product.objects.all()

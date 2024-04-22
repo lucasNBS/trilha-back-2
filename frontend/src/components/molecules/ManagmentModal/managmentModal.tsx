@@ -6,8 +6,9 @@ import { Input } from "src/components/atoms/Input/input";
 import { Modal } from "src/components/atoms/Modal/modal";
 import { ModalOptionsType } from "src/pages";
 import * as Yup from "yup";
-import style from "./managmentModal.module.css";
 import { ManagmentContext } from "src/contexts/managmentContext";
+import style from "./managmentModal.module.css";
+import { baseAxios } from "src/lib/axios";
 
 export type ManagmentForm = {
   quantity_sold?: number
@@ -50,18 +51,11 @@ export function ManagmentModal({ setIsOpen, options }: ManagmentModalProps) {
   async function submit(data: ManagmentForm) {
     const value = data[name]
 
-    const request = await fetch(
-      `http://127.0.0.1:8000/product/${options.product.id}/${apiType}/`,
-      {
-        method: "PATCH",
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      }
+    const request = await baseAxios.patch(
+      `/product/${options.product.id}/${apiType}/`,
+      JSON.stringify(data)
     )
-    .then(res => res.json())
+      .then(res => res.data)
 
     if (request.detail) {
       setError(name, { message: request.detail })

@@ -3,8 +3,9 @@ import style from "./gallery.module.css";
 import { Product } from "src/types/products";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Button } from "src/components/atoms/Button/button";
-import { getProducts } from "src/services/products";
+import { getProducts } from "src/services/client/products";
 import { ModalOptionsType } from "src/pages";
+import { Loading } from "src/components/atoms/Loading/loading";
 
 type GalleryProps = {
   initialProducts: Product[]
@@ -37,10 +38,12 @@ export function Gallery({
     }
   }
 
+  const productsToShow = products.slice(firstIndex, lastIndex)
+
   return (
     <section className={style['container']}>
       <div className={style['grid-container']}>
-        {products.slice(firstIndex, lastIndex).map((product, index) => {
+        {productsToShow.length > 0 ? productsToShow.map((product, index) => {
           return (
             <GalleryCard
               key={product.id}
@@ -49,7 +52,7 @@ export function Gallery({
               setModalOptions={setModalOptions}
               setIsModalOpen={setIsModalOpen}
             />)
-        })}
+        }) : <Loading />}
       </div>
       <div className={style['pagination-container']}>
         {page > 1 && (

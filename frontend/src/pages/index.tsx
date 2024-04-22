@@ -1,10 +1,13 @@
+import { NextPageContext } from "next";
 import Head from "next/head";
+import { parseCookies } from "nookies";
 import { useState } from "react";
 import { DashboardOverview } from "src/components/molecules/DashboardOverview/dashboardOverview";
 import { ManagmentModal } from "src/components/molecules/ManagmentModal/managmentModal";
 import { Gallery } from "src/components/organisms/Gallery/gallery";
-import { getOverview, getProducts } from "src/services/products";
+import { getOverview, getProducts } from "src/services/server/products";
 import { Product, getProducts as getProductsType } from "src/types/products";
+import { getCookieFromServer } from "src/utils/getCookieFromServer";
 
 export type ModalOptionsType = {
   product: Product;
@@ -47,9 +50,11 @@ export default function Home({ stock, sold, productsData }: HomeProps) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx: NextPageContext) {
+  const token = getCookieFromServer("access_token", ctx)
+
   const overview = await getOverview()
-  const productsData = await getProducts(1)
+  const productsData = await getProducts(1, token as string)
 
   return {
     props: {

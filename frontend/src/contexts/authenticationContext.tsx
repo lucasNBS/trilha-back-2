@@ -1,5 +1,6 @@
-import { parseCookies } from "nookies";
+import { parseCookies, setCookie } from "nookies";
 import { Dispatch, ReactNode, SetStateAction, createContext, useEffect, useState } from "react";
+import { baseAxios } from "src/lib/axios";
 import { User } from "src/types/user";
 
 type AuthenticationContextType = {
@@ -21,18 +22,16 @@ export function AuthenticationContextProvider({ children }: AuthenticationContex
 
   useEffect(() => {
     const getData = async () => {
-      const request = await fetch('http://127.0.0.1:8000/user/',
-        {
-          method: 'GET',
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      )
-      .then(res => res.json())
-
-      console.log(request)
+      try {
+        const refreshToken = parseCookies()['refresh_token']
+        const request = await baseAxios.post('/token/', JSON.stringify(refreshToken))
+          .then(res => res.data)
+  
+        setCookie(null, 'access_token', request['access_token'], { maxAge: 20, path: "/" })
+        setUser(request['user'])
+      } catch (err) {
+        console.log(err)
+      }
     }
     getData()
   }, [])

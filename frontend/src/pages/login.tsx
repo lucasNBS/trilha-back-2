@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { setCookie } from "nookies";
 import { useContext } from "react";
 import { AuthenticationContext } from "src/contexts/authenticationContext";
+import { baseAxios } from "src/lib/axios";
 
 type LoginFormType = {
   email: string
@@ -41,17 +42,14 @@ export default function Login() {
 
   async function submit(data: LoginFormType) {
 
-    const request = await fetch('http://127.0.0.1:8000/login/',
+    const request = await baseAxios.post('/login/', JSON.stringify(data),
       {
-        method: 'POST',
         headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data)
+          "Content-Type": "application/json"
+        }
       }
     )
-    .then(res => res.json())
+      .then(res => res.data)
 
     if (request.detail) {
       setError("password", { message: request.detail })
@@ -59,8 +57,8 @@ export default function Login() {
       const accessToken = request['access_token']
       const refreshToken = request['refresh_token']
 
-      setCookie(null, "access_token", accessToken, { maxAge: 60 * 60 * 1000 })
-      setCookie(null, "refresh_token", refreshToken, { maxAge: 60 * 60 * 1000 })
+      setCookie(null, "access_token", accessToken, { maxAge: 20, path: "/" })
+      setCookie(null, "refresh_token", refreshToken, { path: "/" })
       setUser(request['user'])
 
       router.push("/")

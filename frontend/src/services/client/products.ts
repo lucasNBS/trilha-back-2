@@ -1,10 +1,11 @@
+import { baseAxios } from "src/lib/axios";
 import { Product, getOverview, getProducts } from "src/types/products";
 
 export async function getOverview(): Promise<getOverview> {
   try {
-    const data = await fetch("http://127.0.0.1:8000/product/overview/").then(res => res.json())
+    const res = await baseAxios.get("/product/overview/").then(res => res.data)
 
-    return data
+    return res
   } catch (err) {
     return {
       total: 0,
@@ -16,9 +17,9 @@ export async function getOverview(): Promise<getOverview> {
 
 export async function getProducts(page: number): Promise<getProducts> {
   try {
-    const data = await fetch(`http://127.0.0.1:8000/products/?page=${page}`).then(res => res.json())
+    const res = await baseAxios.get(`/products/?page=${page}`).then(res => res.data)
   
-    return data
+    return res
   } catch (err) {
     return {
       count: 0,
@@ -31,9 +32,9 @@ export async function getProducts(page: number): Promise<getProducts> {
 
 export async function getProduct(id: number): Promise<Product> {
   try {
-    const data = await fetch(`http://127.0.0.1:8000/products/${id}/`).then(res => res.json())
+    const res = await baseAxios(`/products/${id}/`).then(res => res.data)
   
-    return data
+    return res
   } catch (err) {
     return {} as Product
   }

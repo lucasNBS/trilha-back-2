@@ -1,12 +1,13 @@
 import Head from "next/head";
-import { getProduct } from "src/services/products";
+import { getProduct } from "src/services/client/products";
 import { Product } from "src/types/products";
-import style from "src/styles/product.module.css";
 import { Button } from "src/components/atoms/Button/button";
 import Image from "next/image";
-import { useContext } from "react";
-import { ManagmentContext } from "src/contexts/managmentContext";
 import { useRouter } from "next/router";
+import { baseAxios } from "src/lib/axios";
+import style from "src/styles/product.module.css";
+import { getCookieFromServer } from "src/utils/getCookieFromServer";
+import { NextPageContext } from "next";
 
 type ProductProps = {
   product: Product
@@ -17,7 +18,7 @@ export default function Product({ product }: ProductProps) {
 
   async function handleDeleteProduct() {
     try {
-      await fetch(`http://127.0.0.1:8000/products/${product.id}/`, { method: "DELETE" })
+      await baseAxios.delete(`/products/${product.id}/`)
       router.push("/")
     } catch (err) {
       console.log(err)
@@ -68,8 +69,9 @@ export default function Product({ product }: ProductProps) {
   )
 }
 
-export async function getServerSideProps(request: any) {
-  const id = request.query.id
+export async function getServerSideProps(ctx: NextPageContext) {
+  const id = Number(ctx.query.id)
+  const token = getCookieFromServer("access_token", ctx)
 
   const product = await getProduct(id)
 
