@@ -39,7 +39,7 @@ class ProductView(ModelViewSet, LoginRequiredMixin):
     self.is_logged(request)
     return super().destroy(request, *args, **kwargs)
 
-class ProductQuantitySoldView(UpdateAPIView):
+class ProductQuantitySoldView(UpdateAPIView, LoginRequiredMixin):
   queryset = Product.objects.all()
   serializer_class = ProductSerializer
   lookup_field = 'id'
@@ -47,6 +47,8 @@ class ProductQuantitySoldView(UpdateAPIView):
   lookup_url_kwarg = 'id'
 
   def update(self, request, *args, **kwargs):
+
+    self.is_logged(request)
 
     product_quantity_sold = self.get_object().__getattribute__('quantity_sold')
     product_quantity_in_stock = self.get_object().__getattribute__('quantity_in_stock')
@@ -68,7 +70,7 @@ class ProductQuantitySoldView(UpdateAPIView):
     
     return super().update(request, *args, **kwargs)
 
-class ProductQuantityStockView(UpdateAPIView):
+class ProductQuantityStockView(UpdateAPIView, LoginRequiredMixin):
   queryset = Product.objects.all()
   serializer_class = ProductSerializer
   lookup_field = 'id'
@@ -76,6 +78,8 @@ class ProductQuantityStockView(UpdateAPIView):
   lookup_url_kwarg = 'id'
 
   def update(self, request, *args, **kwargs):
+    
+    self.is_logged(request)
 
     product_quantity_in_stock = self.get_object().__getattribute__('quantity_in_stock')
 

@@ -11,15 +11,17 @@ export default function NewProduct() {
     const formData = new FormData(form)
 
     try {
-      await baseAxios.post("/products/", formData,
+      const res = await baseAxios.post("/products/", formData,
         {
           headers: {
             'content-type': 'multipart/form-data'
           }
         }
-      )
+      ).then(res => res.data)
 
-      router.push("/")
+      if (res.id) {
+        router.push("/")
+      }
     } catch (err) {
       console.log(err)
     }

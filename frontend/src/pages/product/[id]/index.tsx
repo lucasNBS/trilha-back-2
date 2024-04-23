@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { getProduct } from "src/services/client/products";
+import { getProduct } from "src/services/server/products";
 import { Product } from "src/types/products";
 import { Button } from "src/components/atoms/Button/button";
 import Image from "next/image";
@@ -18,7 +18,8 @@ export default function Product({ product }: ProductProps) {
 
   async function handleDeleteProduct() {
     try {
-      await baseAxios.delete(`/products/${product.id}/`)
+      const res = await baseAxios.delete(`/products/${product.id}/`).then(res => res.data)
+      
       router.push("/")
     } catch (err) {
       console.log(err)
@@ -73,7 +74,7 @@ export async function getServerSideProps(ctx: NextPageContext) {
   const id = Number(ctx.query.id)
   const token = getCookieFromServer("access_token", ctx)
 
-  const product = await getProduct(id)
+  const product = await getProduct(id, token as string)
 
   if (product.id != id) {
     return {

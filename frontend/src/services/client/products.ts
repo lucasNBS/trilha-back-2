@@ -32,7 +32,7 @@ export async function getProducts(page: number): Promise<getProducts> {
 
 export async function getProduct(id: number): Promise<Product> {
   try {
-    const res = await baseAxios(`/products/${id}/`).then(res => res.data)
+    const res = await baseAxios.get(`/products/${id}/`).then(res => res.data)
   
     return res
   } catch (err) {

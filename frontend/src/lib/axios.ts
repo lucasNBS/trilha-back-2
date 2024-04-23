@@ -40,6 +40,8 @@ baseAxios.interceptors.response.use(
             Authorization: `Bearer ${parseCookies()["access_token"]}`,
           }
           originalConfig.headers["Authorization"] = `Bearer ${token}`
+          isRefreshing = false
+
           return baseAxios(originalConfig)
         } catch (error) {
           console.log(error)

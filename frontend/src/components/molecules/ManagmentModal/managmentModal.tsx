@@ -51,37 +51,46 @@ export function ManagmentModal({ setIsOpen, options }: ManagmentModalProps) {
   async function submit(data: ManagmentForm) {
     const value = data[name]
 
-    const request = await baseAxios.patch(
-      `/product/${options.product.id}/${apiType}/`,
-      JSON.stringify(data)
-    )
-      .then(res => res.data)
-
-    if (request.detail) {
-      setError(name, { message: request.detail })
-    } else {
-      setIsOpen(false)
-      setEditedProductId(options.product.id)
-
-      if (name === 'quantity_in_stock' && typeof value === 'number') {
-        if (data.operation === 'add') {
-          setStock(pre => pre + value)
+    try {
+      const request = await baseAxios.patch(
+        `/product/${options.product.id}/${apiType}/`,
+        JSON.stringify(data),
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
         }
-        if (data.operation === 'remove') {
-          setStock(pre => pre - value)
+      )
+        .then(res => res.data)
+  
+      if (request.detail) {
+        setError(name, { message: request.detail })
+      } else {
+        setIsOpen(false)
+        setEditedProductId(options.product.id)
+  
+        if (name === 'quantity_in_stock' && typeof value === 'number') {
+          if (data.operation === 'add') {
+            setStock(pre => pre + value)
+          }
+          if (data.operation === 'remove') {
+            setStock(pre => pre - value)
+          }
+        }
+  
+        if (name === 'quantity_sold' && typeof value === 'number') {
+          if (data.operation === 'add') {
+            setSold(pre => pre + value)
+            setStock(pre => pre - value)
+          }
+          if (data.operation === 'remove') {
+            setSold(pre => pre - value)
+            setStock(pre => pre + value)
+          }
         }
       }
-
-      if (name === 'quantity_sold' && typeof value === 'number') {
-        if (data.operation === 'add') {
-          setSold(pre => pre + value)
-          setStock(pre => pre - value)
-        }
-        if (data.operation === 'remove') {
-          setSold(pre => pre - value)
-          setStock(pre => pre + value)
-        }
-      }
+    } catch(err) {
+      console.log(err)
     }
   }
 

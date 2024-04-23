@@ -26,10 +26,14 @@ export function GalleryCard({
   useEffect(() => {
     if (productData.id === editedProductId) {
       const getData = async () => {
-        const data = await baseAxios.get(`/products/${productData.id}/`)
-          .then(res => res.data)
-          
-        setProductData(data)
+        try {
+          const data = await baseAxios.get(`/products/${productData.id}/`)
+            .then(res => res.data)
+            
+          setProductData(data)
+        } catch (err) {
+          console.log(err)
+        }
       }
       getData()
     }

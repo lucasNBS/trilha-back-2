@@ -3,8 +3,9 @@ import Head from "next/head"
 import { useRouter } from "next/router"
 import { ProductForm } from "src/components/organisms/ProductForm/productForm"
 import { baseAxios } from "src/lib/axios"
-import { getProduct } from "src/services/client/products"
+import { getProduct } from "src/services/server/products"
 import { Product } from "src/types/products"
+import { getCookieFromServer } from "src/utils/getCookieFromServer"
 
 type ProductEditProps = {
   product: Product
@@ -18,15 +19,17 @@ export default function ProductEdit({ product }: ProductEditProps) {
     const formData = new FormData(form)
 
     try {
-      await baseAxios.patch(`/products/${product.id}/`, formData,
+      const res = await baseAxios.patch(`/products/${product.id}/`, formData,
         {
           headers: {
             'content-type': 'multipart/form-data'
           }
         }
-      )
+      ).then(res => res.data)
 
-      router.push("/")
+      if (res.id) {
+        router.push("/")
+      }
     } catch (err) {
       console.log(err)
     }
@@ -45,8 +48,9 @@ export default function ProductEdit({ product }: ProductEditProps) {
 
 export async function getServerSideProps(ctx: NextPageContext) {
   const id = Number(ctx.query.id)
+  const token = getCookieFromServer("access_token", ctx)
 
-  const product = await getProduct(id)
+  const product = await getProduct(id, token as string)
 
   if (product.id != id) {
     return {
