@@ -10,6 +10,7 @@
   gap: 1.5rem;
   padding: 4rem 2rem;
   flex: 1;
+  z-index: 2;
 }
 
 .username {
@@ -30,4 +31,26 @@
   font-weight: 500;
   text-align: left;
   color: var(--main-text);
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    min-height: unset;
+    height: 64px;
+    flex-direction: row;
+    align-items: center;
+    padding: 2rem 4rem;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .container {
+    padding: 2rem;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .username {
+    display: none;
+  }
 }

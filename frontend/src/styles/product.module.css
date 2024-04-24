@@ -64,3 +64,18 @@
   align-items: center;
   gap: 0.5rem;
 }
+
+@media screen and (max-width: 1024px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .product-image-container {
+    max-width: 320px;
+    margin: auto;
+  }
+
+  .product-info {
+    flex: unset;
+  }
+}

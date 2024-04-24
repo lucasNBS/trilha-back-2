@@ -21,3 +21,10 @@
   color: var(--main-text);
   font-size: 1.75rem;
 }
+
+@media screen and (max-width: 1200px) {
+  .container {
+    min-width: 250px;
+    max-width: unset;
+  }
+}

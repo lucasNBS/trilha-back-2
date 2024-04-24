@@ -63,3 +63,14 @@
   font-size: 0.875rem;
   color: var(--delete-color);
 }
+
+@media screen and (max-width: 1024px) {
+  .form-container {
+    flex-direction: column;
+  }
+
+  .image-container {
+    max-width: 320px;
+    margin: auto;
+  }
+}

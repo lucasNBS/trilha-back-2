@@ -5,3 +5,11 @@
   align-items: center;
   gap: 4rem;
 }
+
+@media screen and (max-width: 1200px) {
+  .container {
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+}

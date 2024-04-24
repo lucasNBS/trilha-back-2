@@ -51,3 +51,22 @@
   gap: 0.25rem;
   flex-wrap: wrap;
 }
+
+@media screen and (max-width: 1200px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .actions-container {
+    max-width: 232px;
+    margin: auto;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .actions-container {
+    max-width: unset;
+    margin: 0;
+    gap: 0.5rem;
+  }
+}
