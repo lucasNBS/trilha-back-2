@@ -22,7 +22,13 @@ export async function login(data: LoginFormType) {
 
 export async function register(data: RegisterFormType) {
   try {
-    const res = await baseAxios.post('/register/', JSON.stringify(data))
+    const res = await baseAxios.post('/register/', JSON.stringify(data),
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    )
       .then(res => res.data)
 
     return res

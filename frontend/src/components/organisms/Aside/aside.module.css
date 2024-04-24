@@ -12,6 +12,13 @@
   flex: 1;
 }
 
+.username {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: left;
+  color: var(--main-text);
+}
+
 .button-logout {
   cursor: pointer;
   height: 36px;
