@@ -3,6 +3,16 @@ import { LoginFormType, RegisterFormType } from "src/types/user";
 
 const errorMessage = { detail: 'Something went wrong' }
 
+export async function user() {
+  try {
+    const res = await baseAxios.get('/user/').then(res => res.data)
+
+    return res
+  } catch (err) {
+    return errorMessage
+  }
+}
+
 export async function login(data: LoginFormType) {
   try {
     const res = await baseAxios.post('/login/', JSON.stringify(data),

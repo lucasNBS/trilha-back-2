@@ -1,5 +1,5 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useEffect, useState } from "react";
-import { tokenRefresh } from "src/services/client/token";
+import { user as getUser } from "src/services/client/user";
 import { User } from "src/types/user";
 
 type AuthenticationContextType = {
@@ -21,10 +21,10 @@ export function AuthenticationContextProvider({ children }: AuthenticationContex
 
   useEffect(() => {
     const getData = async () => {
-      const res = await tokenRefresh()
+      const res = await getUser()
 
       if (res) {
-        setUser(res['user'])
+        setUser(res)
       }
     }
     getData()

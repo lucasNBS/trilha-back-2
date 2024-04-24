@@ -72,10 +72,11 @@ class TokenView(APIView):
     except:
       raise AuthenticationFailed('Unauthenticated')
 
-class RestrictAccessView(APIView):
+class UserView(APIView):
   
   def get(self, request):
-    access_token = request.COOKIES.get('access_token')
+    
+    access_token = request.headers['Authorization'].split(" ")[1]
 
     try:
       payload = jwt.decode(access_token, 'SECRET', algorithms=['HS256'])
