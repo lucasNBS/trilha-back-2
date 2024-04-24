@@ -38,7 +38,7 @@ export function ManagmentModal({ setIsOpen, options }: ManagmentModalProps) {
   const name = options.type === "Sell" ? 'quantity_sold' : 'quantity_in_stock'
   const apiType = options.type === "Sell" ? 'quantity-sold' : 'quantity-stock'
 
-  const { setSold, setStock, setEditedProductId } = useContext(ManagmentContext)
+  const { setSold, setStock, setSales, setEditedProductId } = useContext(ManagmentContext)
   const {
       register,
       formState: { errors },
@@ -73,10 +73,12 @@ export function ManagmentModal({ setIsOpen, options }: ManagmentModalProps) {
         if (data.operation === 'add') {
           setSold(pre => pre + value)
           setStock(pre => pre - value)
+          setSales(pre => pre + value * options.product.price)
         }
         if (data.operation === 'remove') {
           setSold(pre => pre - value)
           setStock(pre => pre + value)
+          setSales(pre => pre - value * options.product.price)
         }
       }
     }

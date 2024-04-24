@@ -21,7 +21,7 @@ export function GalleryCard({
   setModalOptions,
   setIsModalOpen
 }: GalleryCardProps) {
-  const { setSold, setStock, editedProductId } = useContext(ManagmentContext)
+  const { setSold, setStock, setSales, editedProductId } = useContext(ManagmentContext)
   const [productData, setProductData] = useState(product)
 
   useEffect(() => {
@@ -44,6 +44,7 @@ export function GalleryCard({
       setProducts(pre => pre.filter(item => item.id !== productData.id))
       setSold(pre => pre - productData.quantity_sold)
       setStock(pre => pre - productData.quantity_in_stock)
+      setSales(pre => pre - productData.quantity_sold * productData.price)
     }
   }
   

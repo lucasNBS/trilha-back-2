@@ -1,9 +1,15 @@
 import { serverAxios } from "src/lib/axios";
 import { Product, getOverview, getProducts } from "src/types/products";
 
-export async function getOverview(): Promise<getOverview> {
+export async function getOverview(cookie: string): Promise<getOverview> {
   try {
-    const res = await serverAxios.get("/product/overview/").then(res => res.data)
+    const res = await serverAxios.get("/product/overview/",
+      {
+        headers: {
+          Authorization: `Bearer ${cookie}`
+        }
+      }
+    ).then(res => res.data)
 
     return res
   } catch (err) {

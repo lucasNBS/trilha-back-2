@@ -7,6 +7,7 @@ from .exceptions import OperationUnavailable
 from .models import Product
 from .serializers import ProductSerializer
 from user.mixins import LoginRequiredMixin
+from user.permissions import IsCEO
 
 # Create your views here.
 class DefaultPagination(PageNumberPagination):
@@ -96,11 +97,12 @@ class ProductQuantityStockView(UpdateAPIView, LoginRequiredMixin):
 
     return super().update(request, *args, **kwargs)
 
-class StockOverview(ListAPIView):
+class StockOverview(ListAPIView, IsCEO):
   queryset = Product.objects.all()
   serializer_class = ProductSerializer
 
   def get(self, request, *args, **kwargs):
+    self.is_logged(request)
     return self.retrieve(request, *args, **kwargs)
 
   def retrieve(self, request, *args, **kwargs):
@@ -108,13 +110,24 @@ class StockOverview(ListAPIView):
     quantity_in_stock = 0
     quantity_sold = 0
 
-    for product in self.get_queryset():
-      total += product.price * product.quantity_sold
-      quantity_in_stock += product.quantity_in_stock
-      quantity_sold += product.quantity_sold
+    if self.has_permission(request, self.retrieve):
+      for product in self.get_queryset():
+        total += product.price * product.quantity_sold
+        quantity_in_stock += product.quantity_in_stock
+        quantity_sold += product.quantity_sold
 
-    return JsonResponse({
-      'total': total,
-      'quantity_in_stock': quantity_in_stock,
-      'quantity_sold': quantity_sold
-    })
+      return JsonResponse({
+        'total': total,
+        'quantity_in_stock': quantity_in_stock,
+        'quantity_sold': quantity_sold
+      })
+    
+    else:
+      for product in self.get_queryset():
+        quantity_in_stock += product.quantity_in_stock
+        quantity_sold += product.quantity_sold
+
+      return JsonResponse({
+        'quantity_in_stock': quantity_in_stock,
+        'quantity_sold': quantity_sold
+      })

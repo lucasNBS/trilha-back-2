@@ -16,10 +16,11 @@ export type ModalOptionsType = {
 type HomeProps = {
   stock: number
   sold: number
+  sales: number | null
   productsData: getProductsType
 }
 
-export default function Home({ stock, sold, productsData }: HomeProps) {
+export default function Home({ stock, sold, sales, productsData }: HomeProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalOptions, setModalOptions] = useState<ModalOptionsType>({
     product: {} as Product,
@@ -32,7 +33,7 @@ export default function Home({ stock, sold, productsData }: HomeProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>CRM - Home</title>
       </Head>
-      <DashboardOverview initialStock={stock} initialSold={sold} />
+      <DashboardOverview initialStock={stock} initialSold={sold} initialSales={sales} />
       <Gallery
         initialProducts={productsData.results}
         maxPage={Math.ceil(productsData.count / 5)}
@@ -52,13 +53,14 @@ export default function Home({ stock, sold, productsData }: HomeProps) {
 export async function getServerSideProps(ctx: NextPageContext) {
   const token = getCookieFromServer("access_token", ctx)
 
-  const overview = await getOverview()
+  const overview = await getOverview(token as string)
   const productsData = await getProducts(1, token as string)
 
   return {
     props: {
       stock: overview.quantity_in_stock,
       sold: overview.quantity_sold,
+      sales: overview.total ? overview.total : null,
       productsData
     }
   }
