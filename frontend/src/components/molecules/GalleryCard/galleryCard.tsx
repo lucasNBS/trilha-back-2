@@ -6,6 +6,7 @@ import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react
 import { ManagmentContext } from "src/contexts/managmentContext";
 import { ModalOptionsType } from "src/pages";
 import { baseAxios } from "src/lib/axios";
+import { deleteProduct, getProduct } from "src/services/client/products";
 
 type GalleryCardProps = {
   product: Product
@@ -26,13 +27,10 @@ export function GalleryCard({
   useEffect(() => {
     if (productData.id === editedProductId) {
       const getData = async () => {
-        try {
-          const data = await baseAxios.get(`/products/${productData.id}/`)
-            .then(res => res.data)
-            
-          setProductData(data)
-        } catch (err) {
-          console.log(err)
+        const res = await getProduct(productData.id)
+
+        if (res.id) {
+          setProductData(res)
         }
       }
       getData()
@@ -40,14 +38,12 @@ export function GalleryCard({
   }, [editedProductId])
   
   async function handleDeleteProduct() {
-    try {
-      await baseAxios.delete(`/products/${productData.id}/`)
-  
+    const res = await deleteProduct(productData.id)
+
+    if (res) {
       setProducts(pre => pre.filter(item => item.id !== productData.id))
       setSold(pre => pre - productData.quantity_sold)
       setStock(pre => pre - productData.quantity_in_stock)
-    } catch (err) {
-      console.log(err)
     }
   }
   

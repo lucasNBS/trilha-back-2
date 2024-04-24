@@ -2,7 +2,7 @@ import { NextPageContext } from "next"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import { ProductForm } from "src/components/organisms/ProductForm/productForm"
-import { baseAxios } from "src/lib/axios"
+import { editProduct } from "src/services/client/products"
 import { getProduct } from "src/services/server/products"
 import { Product } from "src/types/products"
 import { getCookieFromServer } from "src/utils/getCookieFromServer"
@@ -18,20 +18,10 @@ export default function ProductEdit({ product }: ProductEditProps) {
     const form = document.querySelector("#product-form") as HTMLFormElement
     const formData = new FormData(form)
 
-    try {
-      const res = await baseAxios.patch(`/products/${product.id}/`, formData,
-        {
-          headers: {
-            'content-type': 'multipart/form-data'
-          }
-        }
-      ).then(res => res.data)
+    const res = await editProduct(product.id, formData)
 
-      if (res.id) {
-        router.push("/")
-      }
-    } catch (err) {
-      console.log(err)
+    if (res.id) {
+      router.push("/")
     }
   }
 

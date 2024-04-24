@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { ProductForm } from "src/components/organisms/ProductForm/productForm";
-import { baseAxios } from "src/lib/axios";
+import { createProduct } from "src/services/client/products";
 
 export default function NewProduct() {
   const router = useRouter()
@@ -10,20 +10,10 @@ export default function NewProduct() {
     const form = document.querySelector("#product-form") as HTMLFormElement
     const formData = new FormData(form)
 
-    try {
-      const res = await baseAxios.post("/products/", formData,
-        {
-          headers: {
-            'content-type': 'multipart/form-data'
-          }
-        }
-      ).then(res => res.data)
+    const res = await createProduct(formData)
 
-      if (res.id) {
-        router.push("/")
-      }
-    } catch (err) {
-      console.log(err)
+    if (res.id) {
+      router.push("/")
     }
   }
 

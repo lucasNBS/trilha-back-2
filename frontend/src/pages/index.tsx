@@ -1,6 +1,5 @@
 import { NextPageContext } from "next";
 import Head from "next/head";
-import { parseCookies } from "nookies";
 import { useState } from "react";
 import { DashboardOverview } from "src/components/molecules/DashboardOverview/dashboardOverview";
 import { ManagmentModal } from "src/components/molecules/ManagmentModal/managmentModal";

@@ -10,11 +10,8 @@ import { setCookie } from "nookies";
 import { useContext } from "react";
 import { AuthenticationContext } from "src/contexts/authenticationContext";
 import { baseAxios } from "src/lib/axios";
-
-type LoginFormType = {
-  email: string
-  password: string
-}
+import { LoginFormType } from "src/types/user";
+import { login } from "src/services/client/user";
 
 const LoginFormSchema = Yup.object().shape({
   email: Yup.string()
@@ -42,24 +39,17 @@ export default function Login() {
 
   async function submit(data: LoginFormType) {
 
-    const request = await baseAxios.post('/login/', JSON.stringify(data),
-      {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    )
-      .then(res => res.data)
+    const res = await login(data)
 
-    if (request.detail) {
-      setError("password", { message: request.detail })
+    if (res.detail) {
+      setError("password", { message: res.detail })
     } else {
-      const accessToken = request['access_token']
-      const refreshToken = request['refresh_token']
+      const accessToken = res['access_token']
+      const refreshToken = res['refresh_token']
 
       setCookie(null, "access_token", accessToken, { maxAge: 20, path: "/" })
       setCookie(null, "refresh_token", refreshToken, { path: "/" })
-      setUser(request['user'])
+      setUser(res['user'])
 
       router.push("/")
     }

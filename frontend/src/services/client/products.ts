@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { baseAxios } from "src/lib/axios";
 import { Product, getOverview, getProducts } from "src/types/products";
 
@@ -37,5 +38,48 @@ export async function getProduct(id: number): Promise<Product> {
     return res
   } catch (err) {
     return {} as Product
+  }
+}
+
+export async function createProduct(formData: FormData): Promise<Product> {
+  try {
+    const res = await baseAxios.post("/products/", formData,
+      {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      }
+    ).then(res => res.data)
+
+    return res
+  } catch (err) {
+    return {} as Product
+  }
+}
+
+export async function editProduct(id: number, formData: FormData): Promise<Product> {
+  try {
+    const res = await baseAxios.patch(`/products/${id}/`, formData,
+        {
+          headers: {
+            'content-type': 'multipart/form-data'
+          }
+        }
+      )
+      .then(res => res.data)
+
+    return res
+  } catch (err) {
+    return {} as Product
+  }
+}
+
+export async function deleteProduct(id: number): Promise<AxiosResponse | null> {
+  try {
+    const res = await baseAxios.delete(`/products/${id}/`)
+    
+    return res
+  } catch (err) {
+    return null
   }
 }

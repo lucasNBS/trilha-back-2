@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import { ManagmentContext } from "src/contexts/managmentContext";
 import style from "./managmentModal.module.css";
 import { baseAxios } from "src/lib/axios";
+import { manageStock } from "src/services/client/stockManagment";
 
 export type ManagmentForm = {
   quantity_sold?: number
@@ -51,46 +52,33 @@ export function ManagmentModal({ setIsOpen, options }: ManagmentModalProps) {
   async function submit(data: ManagmentForm) {
     const value = data[name]
 
-    try {
-      const request = await baseAxios.patch(
-        `/product/${options.product.id}/${apiType}/`,
-        JSON.stringify(data),
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
+    const res = await manageStock(options, apiType, data)
+
+    if (res.detail) {
+      setError(name, { message: res.detail })
+    } else {
+      setIsOpen(false)
+      setEditedProductId(options.product.id)
+
+      if (name === 'quantity_in_stock' && typeof value === 'number') {
+        if (data.operation === 'add') {
+          setStock(pre => pre + value)
         }
-      )
-        .then(res => res.data)
-  
-      if (request.detail) {
-        setError(name, { message: request.detail })
-      } else {
-        setIsOpen(false)
-        setEditedProductId(options.product.id)
-  
-        if (name === 'quantity_in_stock' && typeof value === 'number') {
-          if (data.operation === 'add') {
-            setStock(pre => pre + value)
-          }
-          if (data.operation === 'remove') {
-            setStock(pre => pre - value)
-          }
-        }
-  
-        if (name === 'quantity_sold' && typeof value === 'number') {
-          if (data.operation === 'add') {
-            setSold(pre => pre + value)
-            setStock(pre => pre - value)
-          }
-          if (data.operation === 'remove') {
-            setSold(pre => pre - value)
-            setStock(pre => pre + value)
-          }
+        if (data.operation === 'remove') {
+          setStock(pre => pre - value)
         }
       }
-    } catch(err) {
-      console.log(err)
+
+      if (name === 'quantity_sold' && typeof value === 'number') {
+        if (data.operation === 'add') {
+          setSold(pre => pre + value)
+          setStock(pre => pre - value)
+        }
+        if (data.operation === 'remove') {
+          setSold(pre => pre - value)
+          setStock(pre => pre + value)
+        }
+      }
     }
   }
 

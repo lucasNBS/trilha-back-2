@@ -6,13 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
-import { baseAxios } from "src/lib/axios";
-
-type RegisterFormType = {
-  email: string
-  name: string
-  password: string
-}
+import { RegisterFormType } from "src/types/user";
+import { register as registerUser } from "src/services/client/user"
 
 const RegisterFormSchema = Yup.object().shape({
   email: Yup.string()
@@ -43,11 +38,10 @@ export default function Register() {
 
   async function submit(data: RegisterFormType) {
 
-    const request = await baseAxios.post('/register/', JSON.stringify(data))
-      .then(res => res.data)
+    const res = await registerUser(data)
 
-    if (request.detail) {
-      setError("email", { message: request.detail })
+    if (res.detail) {
+      setError("email", { message: res.detail })
     } else {
       router.push("/login")
     }

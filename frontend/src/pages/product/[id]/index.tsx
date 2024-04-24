@@ -4,10 +4,10 @@ import { Product } from "src/types/products";
 import { Button } from "src/components/atoms/Button/button";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { baseAxios } from "src/lib/axios";
 import style from "src/styles/product.module.css";
 import { getCookieFromServer } from "src/utils/getCookieFromServer";
 import { NextPageContext } from "next";
+import { deleteProduct } from "src/services/client/products";
 
 type ProductProps = {
   product: Product
@@ -17,12 +17,10 @@ export default function Product({ product }: ProductProps) {
   const router = useRouter()
 
   async function handleDeleteProduct() {
-    try {
-      const res = await baseAxios.delete(`/products/${product.id}/`).then(res => res.data)
-      
+    const res = await deleteProduct(product.id)
+
+    if (res?.status === 204) {
       router.push("/")
-    } catch (err) {
-      console.log(err)
     }
   }
 
